@@ -2,6 +2,7 @@ import os
 import random
 import sys
 import time
+import math
 import pygame as pg
 
 
@@ -80,6 +81,19 @@ def get_kk_imgs() -> dict[tuple[int, int], pg.Surface]:
             
         }
         return kk_dict
+    
+def calc_orientation(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float, float]) -> tuple[float, float]:
+    dx = dst.centerx - org.centerx
+    dy = dst.centery - org.centery
+    dist = math.hypot(dx, dy)
+    if dist == 0:
+        return current_xy
+    if dist < 300:
+        return current_xy
+    speed = math.sqrt(50) 
+    vx = (dx / dist) * speed
+    vy = (dy / dist) * speed
+    return vx, vy
         
 
     
@@ -133,6 +147,8 @@ def main():
         bb_img = bb_imgs[idx]
         bb_rct.width = bb_img.get_rect().width
         bb_rct.height = bb_img.get_rect().height
+        
+        vx, vy = calc_orientation(bb_rct, kk_rct, (vx, vy))
         
         bb_rct.move_ip(avx, avy)
         yoko, tate = check_bound(bb_rct)
