@@ -62,7 +62,25 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
         bb_imgs.append(bb_img) 
         bb_accs = [a for a in range(1, 11)]
     return bb_imgs, bb_accs
-    
+
+
+def get_kk_imgs() -> dict[tuple[int, int], pg.Surface]:
+        base_img = pg.image.load("fig/3.png")
+        flip_img = pg.transform.flip(base_img,True,False)
+        kk_dict = {
+            (0,0):base_img,
+            (-5,0):base_img,
+            (-5,-5):pg.transform.rotozoom(base_img,-45,1.0),
+            (0,-5):pg.transform.rotozoom(flip_img,90,1.0),
+            (+5,-5):pg.transform.rotozoom(flip_img,45,1.0),
+            (+5, 0):flip_img,
+            (+5,+5):pg.transform.rotozoom(flip_img,-45,1.0),
+            (0,+5):pg.transform.rotozoom(flip_img,-90,1.0),
+            (-5,+5):pg.transform.rotozoom(base_img,45,1.0)
+            
+        }
+        return kk_dict
+        
 
     
 
@@ -74,6 +92,8 @@ def main():
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
+    kk_imgs = get_kk_imgs()
+    kk_img = kk_imgs[(0,0)]
     # 爆弾の初期化
     bb_img = pg.Surface((20, 20)) 
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10) 
@@ -84,6 +104,8 @@ def main():
     vx, vy = +5, +5
     clock = pg.time.Clock()
     tmr = 0
+    
+    
     
     bb_imgs, bb_accs = init_bb_imgs()
     while True:
@@ -103,6 +125,7 @@ def main():
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])  # 移動のキャンセル
+        kk_img = kk_imgs.get(tuple(sum_mv), kk_img) # こうかとんの向きの変更
         screen.blit(kk_img, kk_rct)
         idx = min(tmr // 500, 9)
         avx = vx*bb_accs[idx]
