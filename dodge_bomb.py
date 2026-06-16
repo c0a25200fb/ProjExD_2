@@ -82,6 +82,7 @@ def get_kk_imgs() -> dict[tuple[int, int], pg.Surface]:
         }
         return kk_dict
     
+    
 def calc_orientation(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float, float]) -> tuple[float, float]:
     dx = dst.centerx - org.centerx
     dy = dst.centery - org.centery
@@ -95,8 +96,6 @@ def calc_orientation(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float, float]
     vy = (dy / dist) * speed
     return vx, vy
         
-
-    
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -118,7 +117,6 @@ def main():
     vx, vy = +5, +5
     clock = pg.time.Clock()
     tmr = 0
-    
     
     
     bb_imgs, bb_accs = init_bb_imgs()
